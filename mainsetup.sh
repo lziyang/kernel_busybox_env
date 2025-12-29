@@ -3,6 +3,7 @@
 JOBS=$(nproc)
 
 # Download sources
+mkdir srctars
 cd srctars
 
 wget https://www.kernel.org/pub/linux/kernel/v6.x/linux-6.18.2.tar.xz
@@ -32,11 +33,15 @@ make CONFIG_PREFIX="$PWD/_rootfs" install
 cd ..
 
 # Initramfs setup
-rm -rf initramfs/initramfsroot/*
+cd initramfs
+mkdir initramfsroot
+cd ..
+
 cp -a busybox-1.36.1/_rootfs/* initramfs/initramfsroot/
 
 cd initramfs/initramfsroot
 mkdir -p proc sys dev etc tmp root lib
+mkdir -p lib/extmodules
 
 cat > init <<'EOF'
 #!/bin/sh
